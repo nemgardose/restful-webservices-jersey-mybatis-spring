@@ -1,0 +1,97 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.demo.rest.project.training.dao.StudentDAO">
+    <resultMap id="studentMap" type="Student">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="student_number" property="studentNumber"/>
+        <result column="first_name" property="firstName" />
+        <result column="last_name" property="lastName" />
+        <result column="age" property="age" />
+        <result column="gender" property="gender" />
+        <result column="phone_number" property="phoneNumber" />
+        <result column="email_address" property="emailAddress" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+    </resultMap>
+
+	<!-- ************** CREATE ************** -->
+    <insert id="createStudentAccount" parameterType="Student" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    	INSERT INTO 
+    		student(
+	    		user_id, 
+	    		student_number, 
+	    		first_name, 
+	    		last_name, 
+	    		age, 
+	    		gender, 
+	    		phone_number, 
+	    		email_address,
+	    		created_at)
+    		
+    		VALUES(
+	    		#{userId},
+	    		#{studentNumber},
+	    		#{firstName},
+	    		#{lastName},
+	    		#{age},
+	    		#{gender},
+	    		#{phoneNumber},
+	    		#{emailAddress},
+	    		GETDATE())
+    </insert>
+    
+    <!-- ************** READ ************** -->
+    <select id="getStudentList" resultMap="studentMap">
+		 SELECT 
+			 student_number,
+			 user_id,
+			 first_name,
+			 last_name,
+			 age,
+			 gender,
+			 phone_number,
+			 email_address
+		  FROM student
+    </select>
+    
+    <select id="getUserByStudentNumber" resultMap="studentMap">
+		 SELECT 			 
+		 	 student_number,
+			 user_id,
+			 first_name,
+			 last_name,
+			 age,
+			 gender,
+			 phone_number,
+			 email_address
+		  FROM student
+		  WHERE student_number = #{studentNumber};
+    </select>
+    
+  	<!-- ************** UPDATE ************** -->
+	 <update id="updateUserByStudentNumber">
+        UPDATE student
+        SET
+            user_id = #{student.userId},
+            first_name = #{student.firstName},
+            last_name = #{student.lastName},
+            age = #{student.age},
+            gender = #{student.gender},
+            phone_number = #{student.phoneNumber},
+            email_address = #{student.emailAddress},
+            updated_at = GETDATE()
+        WHERE
+            student_number = #{studentNumber}
+    </update>
+    
+   	<!-- ************** DELETE ************** -->
+    <delete id="deleteUserByStudentNumber" parameterType="String">
+       	DELETE FROM 
+       	student 
+       	WHERE student_number = #{studentNumber}
+    </delete>
+    
+
+</mapper>

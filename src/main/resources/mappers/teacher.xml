@@ -1,0 +1,108 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.demo.rest.project.training.dao.TeacherDAO">
+    <resultMap id="teacherMap" type="Teacher">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="employee_id" property="employeeId"/>
+        <result column="course_id" property="courseId"/>
+        <result column="first_name" property="firstName" />
+        <result column="last_name" property="lastName" />
+        <result column="age" property="age" />
+        <result column="gender" property="gender" />
+        <result column="phone_number" property="phoneNumber" />
+        <result column="email_address" property="emailAddress" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+    </resultMap>
+
+    <!-- ************** READ ************** -->
+    <select id="getTeachersList" resultMap="teacherMap">
+		 SELECT 
+			 employee_id,
+			 user_id,
+			 course_id,
+			 first_name,
+			 last_name,
+			 age,
+			 gender,
+			 phone_number,
+			 email_address
+		  FROM teacher
+    </select>
+    
+    <select id="getUserByEmployeeId" resultMap="teacherMap">
+		 SELECT 			 
+		 	 employee_id,
+			 user_id,
+			 first_name,
+			 last_name,
+			 course_id,
+			 age,
+			 gender,
+			 phone_number,
+			 email_address
+		  FROM teacher
+		  WHERE employee_id = #{employeeId};
+    </select>
+
+	<!-- ************** CREATE ************** -->
+    <insert id="createTeacherAccount" parameterType="Teacher" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    	INSERT INTO 
+    		teacher(
+	    		user_id, 
+	    		employee_id, 
+	    		first_name, 
+	    		last_name, 
+	    		age, 
+	    		gender, 
+	    		phone_number, 
+	    		email_address,
+	    		created_at)
+    		
+    		VALUES(
+	    		#{userId},
+	    		#{employeeId},
+	    		#{firstName},
+	    		#{lastName},
+	    		#{age},
+	    		#{gender},
+	    		#{phoneNumber},
+	    		#{emailAddress},
+	    		GETDATE())
+    </insert>
+	
+	<!-- ************** UPDATE ************** -->
+	 <update id="updateUserByEmployeeId">
+        UPDATE teacher
+        SET
+            user_id = #{teacher.userId},
+            first_name = #{teacher.firstName},
+            last_name = #{teacher.lastName},
+            age = #{teacher.age},
+            gender = #{teacher.gender},
+            phone_number = #{teacher.phoneNumber},
+            email_address = #{teacher.emailAddress},
+            updated_at = GETDATE()
+        WHERE
+            employee_id = #{employeeId}
+    </update>
+    
+	 <update id="assignCourseOnEmployee">
+        UPDATE teacher
+        SET
+            course_id = #{teacher.courseId},
+            updated_at = GETDATE()
+        WHERE
+            employee_id = #{employeeId}
+    </update>
+    
+	<!-- ************** DELETE ************** -->
+	    <delete id="deleteUserByEmployeeId" parameterType="String">
+        	DELETE FROM 
+        	teacher 
+        	WHERE employee_id = #{employeeId}
+    </delete>
+	
+</mapper>

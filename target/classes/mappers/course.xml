@@ -1,0 +1,126 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.demo.rest.project.training.dao.CourseDAO">
+
+    <resultMap id="courseMap" type="Course">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="course_code" property="courseCode"/>
+        <result column="description" property="description"/>
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+    </resultMap>
+    
+    <resultMap id="teacherMap" type="Teacher">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="employee_id" property="employeeId"/>
+        <result column="course_id" property="courseId"/>
+        <result column="first_name" property="firstName" />
+        <result column="last_name" property="lastName" />
+        <result column="age" property="age" />
+        <result column="gender" property="gender" />
+        <result column="phone_number" property="phoneNumber" />
+        <result column="email_address" property="emailAddress" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" /> 
+    </resultMap>
+    
+    <resultMap id="teacherCourseMap" type="TeacherCourse">
+        <result column="name" property="name"/>
+        <result column="course_code" property="courseCode"/>
+        <result column="description" property="description"/>
+        <result column="first_name" property="firstName" />
+        <result column="last_name" property="lastName" />
+        <result column="employee_id" property="employeeId" />
+        <result column="age" property="age" />
+        <result column="gender" property="gender" />
+        <result column="phone_number" property="phoneNumber" />
+        <result column="email_address" property="emailAddress" />
+    </resultMap>
+    
+    <!-- ************** READ ************** -->
+    <select id="getCourses" resultMap="courseMap">
+		 SELECT 
+			 name,
+			 course_code,
+			 description
+		  FROM course
+    </select>
+    
+    <select id="getCourseByCode" resultMap="courseMap">
+		 SELECT 			 
+		 	 name,
+			 course_code,
+			 description
+		  FROM course
+		  WHERE course_code = #{courseCode};
+    </select>
+    
+    <select id="findCourseByid" resultMap="courseMap">
+		 SELECT 			 
+		 	 name,
+			 course_code,
+			 description
+		  FROM course
+		  WHERE id = #{courseId};
+    </select>
+    
+    <select id="getAssignedTeacher" resultMap="teacherCourseMap">
+		 SELECT
+		 	c.name,
+		 	c.course_code,
+		 	c.description,
+		 	t.first_name,
+		 	t.last_name,
+		 	t.employee_id,
+		 	t.age,
+		 	t.gender,
+		 	t.phone_number,
+		 	t.email_address 			 
+		  FROM teacher t
+		  
+		  INNER JOIN course c
+		  ON c.id = t.course_id
+		  WHERE
+		  c.id = #{courseId}
+		  
+    </select>
+
+	<!-- ************** CREATE ************** -->
+    <insert id="createCourse" parameterType="Course" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    	INSERT INTO 
+    		course(
+	    		name,
+	    		course_code,
+	    		description,
+	    		created_at)
+    		
+    		VALUES(
+	    		#{name},
+	    		#{courseCode},
+	    		#{description},
+	    		GETDATE())
+    </insert>
+		
+	<!-- ************** UPDATE ************** -->
+	 <update id="updateCourseByCode">
+        UPDATE course
+        SET
+            name = #{course.name},
+            description = #{course.description},
+            updated_at = GETDATE()
+        WHERE
+            course_code = #{courseCode}
+    </update>
+	
+	<!-- ************** DELETE ************** -->
+    <delete id="deleteCourseByCode" parameterType="String">
+        	DELETE 
+        	FROM course 
+        	WHERE 
+        	course_code = #{courseCode}
+    </delete>
+	
+</mapper>

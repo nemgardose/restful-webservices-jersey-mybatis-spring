@@ -1,0 +1,106 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.demo.rest.project.training.dao.StudentCourseDAO">
+    <resultMap id="studentCourseMap" type="StudentCourse">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="course_id" property="courseId"/>
+        <result column="student_id" property="studentId"/>
+    </resultMap>
+    
+    <resultMap id="courseMap" type="Course">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="course_code" property="courseCode"/>
+        <result column="description" property="description"/>
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+    </resultMap>
+    
+    <resultMap id="enrolledStudentMap" type="Course">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="course_code" property="courseCode"/>
+        <result column="description" property="description"/>
+        <collection property="students" resultMap="studentMap" ofType="com.demo.rest.project.training.models.Student"
+        columnPrefix="student_"/>
+    </resultMap>
+    
+    <resultMap id="studentMap" type="Student">
+        <id property="id" column="id"/> 
+       	<result column="first_name" property="firstName"/>
+       	<result column="last_name" property="lastName"/>
+       	<result column="student_number" property="studentNumber"/>
+       	<result column="age" property="age"/>
+       	<result column="gender" property="gender"/>
+       	<result column="phone_number" property="phoneNumber"/>
+       	<result column="email_address" property="emailAddress"/>
+       	<collection property="courses" resultMap="courseMap" ofType="com.demo.rest.project.training.models.Course"
+        columnPrefix="course_"/>
+    </resultMap>
+    
+    <!-- ************** READ ************** -->
+    <select id="checkIfStudentIsAlreadyEnrolled" resultMap="studentCourseMap">
+		 SELECT 
+			 course_id,
+			 student_id
+	     FROM student_course	 
+		 WHERE 
+		 	 course_id = #{studentCourse.courseId}
+		 AND student_id = #{studentCourse.studentId}
+
+    </select>
+    
+     <select id="getEnrolledStudentsByCourseId" resultMap="enrolledStudentMap">
+		SELECT 
+			c.name,
+			c.course_code,
+			c.description,
+			s.first_name as student_first_name,
+			s.last_name as student_last_name,
+			s.student_number as student_student_number
+		FROM course c
+		INNER JOIN student_course sc ON 
+		c.id = sc.course_id
+		INNER JOIN student s ON
+		sc.student_id = s.id
+		WHERE c.id = #{courseId}
+    </select>
+    
+    <select id="getEnrolledCoursesByStudentNumber" resultMap="studentMap">
+		SELECT 
+			s.first_name,
+			s.last_name,
+			s.student_number,
+			s.age,
+			s.gender,
+			s.phone_number,
+			s.email_address,
+			c.name as course_name,
+			c.course_code as course_course_code,
+			c.description as course_description
+
+		FROM student s
+		INNER JOIN student_course sc ON 
+		s.id = sc.student_id
+		INNER JOIN course c ON
+		sc.course_id = c.id
+		WHERE s.student_number = #{studentNumber}
+    </select>
+    
+	<!-- ************** CREATE ************** -->
+     <insert id="addCourseOnStudent">
+    	INSERT INTO 
+    		student_course(
+	    		course_id, 
+	    		student_id,
+	    		created_at)
+    		
+    		VALUES(
+	    		#{studentCourse.courseId},
+	    		#{studentCourse.studentId},
+	    		GETDATE())
+    	</insert>
+    
+</mapper>

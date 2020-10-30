@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+    PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-config.dtd">
+ 
+<configuration>
+    <typeAliases>
+        <typeAlias type="com.demo.rest.project.training.models.Student" alias="Student" />
+        <typeAlias type="com.demo.rest.project.training.models.Teacher" alias="Teacher" />
+        <typeAlias type="com.demo.rest.project.training.models.Course" alias="Course" />
+        <typeAlias type="com.demo.rest.project.training.models.StudentCourse" alias="StudentCourse" />
+        <typeAlias type="com.demo.rest.project.training.models.TeacherCourse" alias="TeacherCourse" />
+    </typeAliases>
+
+    <mappers>
+        <mapper resource="mappers/student.xml" />
+        <mapper resource="mappers/teacher.xml" />
+        <mapper resource="mappers/course.xml" />
+        <mapper resource="mappers/studentCourse.xml" />
+    </mappers>
+    
+</configuration>
